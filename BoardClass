@@ -1,0 +1,72 @@
+import java.awt.Color;
+import java.awt.Graphics;
+
+
+public class Board
+{
+	public int[][] board = new int[10][18];
+	
+	public Board()
+	{	
+		for(int i = 0; i < 10; i++)
+		{
+			for(int j = 0; j < 18; j++)
+			{
+				board[i][j] = 0;
+			}
+		}
+	}
+	/*
+	 * Types are:
+	 * 0: Empty space.
+	 * 1: Block 1.(line)
+	 * 2: Block 2.(square)
+	 * 3: Block 3.(l)
+	 * 4: Block 4.(reverse l)
+	 * 5: Block 5.(_|_)
+	 * 6: Block 6.(up|/|down)
+	 * 7: Block 7.(down|\|up)
+	 
+	 */
+	
+	public void reset()
+	{
+		for(int i = 0; i < 10; i++)
+		{
+			for(int j = 0; j < 18; j++)
+			{
+				board[i][j] = 0;
+			}
+		}
+	}
+	
+	public void paintComponent(Graphics g)
+	{	
+		for(int i = 0; i < 10; i++)
+		{
+			for(int j = 0; j < 18; j++)
+			{		
+				if(board[i][j] == 1) 
+					g.setColor(Color.red);
+				else if(board[i][j] == 2) 
+					g.setColor(Color.green);
+				else if(board[i][j] == 3) 
+					g.setColor(Color.yellow);
+				else if(board[i][j] == 4) 
+					g.setColor(Color.orange);
+				else if(board[i][j] == 5) 
+					g.setColor(Color.blue);
+				else if(board[i][j] == 6) 
+					g.setColor(Color.cyan);
+				else if(board[i][j] == 7) 
+					g.setColor(Color.magenta);
+				else
+					g.setColor(Color.LIGHT_GRAY);
+				
+				g.fillRect(i * 36 + 52, j * 36 + 52, 35, 35);					
+			}
+		}
+	}
+}
+
+
