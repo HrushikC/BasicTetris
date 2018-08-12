@@ -1,0 +1,648 @@
+import java.awt.Color;
+import java.awt.Font; 
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+import javax.swing.JPanel;
+import javax.swing.Timer;
+
+public class Game extends JPanel implements ActionListener {
+	private boolean enter = true;
+	private Timer tm;
+	private long time;
+	private int score; 
+	private boolean hasStarted;
+	private int speed = 45;
+	private int speedDisplay;
+	private boolean gameOver = false;
+	Board b;
+	Block p;
+	Startup s;
+
+	public Game() {
+		tm = new Timer(20, this);
+		tm.start();
+		setFocusable(true);
+		hasStarted = false;
+		s = new Startup();
+		b = new Board();
+		p = new Block();
+		addKeyListener(new KL());
+	}
+
+	public void paintComponent(Graphics g) {
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, 463, 780);
+		if (hasStarted) {
+			gameOver();
+			g.setColor(Color.WHITE);
+			g.fillRect(50, 50, 363, 651);
+			g.setColor(Color.blue);
+			Font font = new Font("Arial", Font.BOLD, 40);
+			g.setFont(font);
+			g.setColor(Color.WHITE);
+			g.fillRect(463, 0, 300, 780);
+			g.setColor(Color.BLUE);
+			g.drawString("Speed:" + speedDisplay, 513, 150);
+			g.drawString("Score:" + score, 500, 350);
+			b.paintComponent(g);
+			if (gameOver) {
+				g.setColor(Color.BLACK);
+				g.fillRect(0, 0, 763, 780);
+				g.setColor(Color.WHITE);
+				g.drawString("Your Score:" + score, 100, 300);
+				g.setColor(Color.RED);
+				g.drawString("You Lose :(", 100, 410);
+				g.drawString("Press N to Play Again.", 100, 520);
+			}
+		} else
+			s.paintComponent(g);
+	}
+
+	public void newBlock() {
+		p.locY = 0;
+		p.locX = 3;
+		p.shape = 1;
+		p.BlockType = (int) (Math.random() * 7) + 1;
+		p.BlockColor(b.board);
+	}
+
+	public void RotationType() {
+		boolean canRotate = false;
+		if (p.BlockType == 1) {
+			if (p.shape == 1)
+				if (p.locY < 15)
+					canRotate = true;
+			if (p.shape == 2)
+				if (p.locX < 7)
+					canRotate = true;
+		}
+		if (p.BlockType == 3) {
+			if (p.shape == 1)
+				if (p.locY < 16)
+					canRotate = true;
+			if (p.shape == 2)
+				if (p.locX >= 0)
+					canRotate = true;
+			if (p.shape == 3)
+				canRotate = true;
+			if (p.shape == 4)
+				if (p.locX < 8)
+					canRotate = true;
+		}
+		if (p.BlockType == 4) {
+			if (p.shape == 1)
+				if (p.locY < 16)
+					canRotate = true;
+			if (p.shape == 2)
+				if (p.locX >= 0)
+					canRotate = true;
+			if (p.shape == 3)
+				canRotate = true;
+			if (p.shape == 4)
+				if (p.locX < 8)
+					canRotate = true;
+		}
+		if (p.BlockType == 5) {
+			if (p.shape == 1)
+				if (p.locY < 16)
+					canRotate = true;
+			if (p.shape == 2)
+				if (p.locX >= 0)
+					canRotate = true;
+			if (p.shape == 3)
+				canRotate = true;
+			if (p.shape == 4)
+				if (p.locX < 8)
+					canRotate = true;
+		}
+		if (p.BlockType == 6) {
+			if (p.shape == 1)
+				if (p.locY < 16)
+					canRotate = true;
+			if (p.shape == 2)
+				if (p.locX < 8)
+					canRotate = true;
+		}
+		if (p.BlockType == 7) {
+			if (p.shape == 1)
+				if (p.locY < 16)
+					canRotate = true;
+			if (p.shape == 2)
+				if (p.locX > 1)
+					canRotate = true;
+		}
+
+		if (canRotate) {
+			if (p.BlockType == 1 || p.BlockType == 6 || p.BlockType == 7) {
+				if (p.shape == 1)
+					p.shape = 2;
+				else
+					p.shape = 1;
+			}
+			if (p.BlockType == 3 || p.BlockType == 4 || p.BlockType == 5) {
+				if (p.shape < 4)
+					p.shape = p.shape + 1;
+				else
+					p.shape = 1;
+			}
+			if (p.BlockType == 2)
+				p.shape = 1;
+			canRotate = false;
+		}
+	}
+
+	private class KL extends KeyAdapter {
+
+		public void keyPressed(KeyEvent e) {
+			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+				hasStarted = true;
+				if (enter) {
+					tm.restart();
+					b.reset();
+					p.locY = 0;
+					p.locX = 3;
+					p.shape = 1;
+					p.BlockType = (int) (Math.random() * 7) + 1;
+				}
+				enter = false;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_N) {
+				if (gameOver) {
+					gameOver = false;
+					tm.restart();
+					b.reset();
+					speed = 45;
+					score = 0;
+					p.locY = 0;
+					p.locX = 3;
+					p.shape = 1;
+					p.BlockType = (int) (Math.random() * 7) + 1;
+				}
+			}
+			if (e.getKeyCode() >= 37 && e.getKeyCode() <= 40) {
+				if (e.getKeyCode() == 37) {
+					p.Block(b.board);
+					move(1);
+					p.BlockColor(b.board);
+				} else if (e.getKeyCode() == 39) {
+					p.Block(b.board);
+					move(2);
+					p.BlockColor(b.board);
+				} else if (e.getKeyCode() == 40) {
+					p.Block(b.board);
+					if (time != speed)
+						move(3);
+					p.BlockColor(b.board);
+				} else {
+					p.Block(b.board);
+					RotationType();
+					p.BlockColor(b.board);
+				}
+			}
+		}
+	}
+
+	public void move(int LR) {
+		if (p.BlockType == 1) {
+			if (p.shape == 1) {
+				if (LR == 1 && p.locX > 0 && b.board[p.locX - 1][p.locY] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 6 && b.board[p.locX + 4][p.locY] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 17 && b.board[p.locX][p.locY + 1] == 0 && b.board[p.locX + 1][p.locY + 1] == 0
+						&& b.board[p.locX + 2][p.locY + 1] == 0 && b.board[p.locX + 3][p.locY + 1] == 0)
+					p.locY++;
+			}
+			if (p.shape == 2) {
+				if (LR == 1 && p.locX > 0 && b.board[p.locX - 1][p.locY] == 0 && b.board[p.locX - 1][p.locY + 1] == 0
+						&& b.board[p.locX - 1][p.locY + 2] == 0 && b.board[p.locX - 1][p.locY + 3] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 9 && b.board[p.locX + 1][p.locY] == 0 && b.board[p.locX + 1][p.locY + 1] == 0
+						&& b.board[p.locX + 1][p.locY + 2] == 0 && b.board[p.locX + 1][p.locY + 3] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 14 && b.board[p.locX][p.locY + 4] == 0)
+					p.locY++;
+			}
+		}
+		if (p.BlockType == 2) {
+			if (LR == 1 && p.locX > 0 && b.board[p.locX - 1][p.locY] == 0 && b.board[p.locX - 1][p.locY + 1] == 0)
+				p.locX--;
+			if (LR == 2 && p.locX < 8 && b.board[p.locX + 2][p.locY] == 0 && b.board[p.locX + 2][p.locY + 1] == 0)
+				p.locX++;
+			if (LR == 3 && p.locY < 16 && b.board[p.locX][p.locY + 2] == 0 && b.board[p.locX + 1][p.locY + 2] == 0)
+				p.locY++;
+		}
+		if (p.BlockType == 3) {
+			if (p.shape == 1) {
+				if (LR == 1 && p.locX > 0 && b.board[p.locX - 1][p.locY] == 0 && b.board[p.locX + 1][p.locY + 1] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 7 && b.board[p.locX + 3][p.locY] == 0 && b.board[p.locX + 3][p.locY + 1] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 16 && b.board[p.locX][p.locY + 1] == 0 && b.board[p.locX + 1][p.locY + 1] == 0
+						&& b.board[p.locX + 2][p.locY + 2] == 0)
+					p.locY++;
+			}
+			if (p.shape == 2) {
+				if (LR == 1 && p.locX > -1 && b.board[p.locX + 1][p.locY] == 0 && b.board[p.locX + 1][p.locY + 1] == 0
+						&& b.board[p.locX][p.locY + 2] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 7 && b.board[p.locX + 3][p.locY] == 0 && b.board[p.locX + 3][p.locY + 1] == 0
+						&& b.board[p.locX + 3][p.locY + 2] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 15 && b.board[p.locX + 1][p.locY + 3] == 0
+						&& b.board[p.locX + 2][p.locY + 3] == 0)
+					p.locY++;
+			}
+			if (p.shape == 3) {
+				if (LR == 1 && p.locX > 0 && b.board[p.locX - 1][p.locY + 1] == 0
+						&& b.board[p.locX - 1][p.locY + 2] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 7 && b.board[p.locX + 1][p.locY + 1] == 0
+						&& b.board[p.locX + 3][p.locY + 2] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 15 && b.board[p.locX][p.locY + 3] == 0 && b.board[p.locX + 1][p.locY + 3] == 0
+						&& b.board[p.locX + 2][p.locY + 3] == 0)
+					p.locY++;
+			}
+			if (p.shape == 4) {
+				if (LR == 1 && p.locX > 0 && b.board[p.locX - 1][p.locY] == 0 && b.board[p.locX - 1][p.locY + 1] == 0
+						&& b.board[p.locX - 1][p.locY + 2] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 8 && b.board[p.locX + 2][p.locY] == 0 && b.board[p.locX + 1][p.locY + 1] == 0
+						&& b.board[p.locX + 1][p.locY + 2] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 15 && b.board[p.locX][p.locY + 3] == 0 && b.board[p.locX + 1][p.locY + 1] == 0)
+					p.locY++;
+			}
+		}
+		if (p.BlockType == 4) {
+			if (p.shape == 1) {
+				if (LR == 1 && p.locX > 0 && b.board[p.locX - 1][p.locY] == 0 && b.board[p.locX - 1][p.locY + 1] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 7 && b.board[p.locX + 3][p.locY] == 0 && b.board[p.locX + 1][p.locY + 1] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 16 && b.board[p.locX][p.locY + 2] == 0 && b.board[p.locX + 1][p.locY + 1] == 0
+						&& b.board[p.locX + 2][p.locY + 1] == 0)
+					p.locY++;
+			}
+			if (p.shape == 2) {
+				if (LR == 1 && p.locX > -1 && b.board[p.locX][p.locY] == 0 && b.board[p.locX + 1][p.locY + 1] == 0
+						&& b.board[p.locX + 1][p.locY + 2] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 7 && b.board[p.locX + 3][p.locY] == 0 && b.board[p.locX + 3][p.locY + 1] == 0
+						&& b.board[p.locX + 3][p.locY + 2] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 15 && b.board[p.locX + 1][p.locY + 1] == 0
+						&& b.board[p.locX + 2][p.locY + 3] == 0)
+					p.locY++;
+			}
+			if (p.shape == 3) {
+				if (LR == 1 && p.locX > 0 && b.board[p.locX + 1][p.locY + 1] == 0
+						&& b.board[p.locX - 1][p.locY + 2] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 7 && b.board[p.locX + 3][p.locY + 1] == 0
+						&& b.board[p.locX + 3][p.locY + 2] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 15 && b.board[p.locX][p.locY + 3] == 0 && b.board[p.locX + 1][p.locY + 3] == 0
+						&& b.board[p.locX + 2][p.locY + 3] == 0)
+					p.locY++;
+			}
+			if (p.shape == 4) {
+				if (LR == 1 && p.locX > 0 && b.board[p.locX - 1][p.locY] == 0 && b.board[p.locX - 1][p.locY + 1] == 0
+						&& b.board[p.locX - 1][p.locY + 2] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 8 && b.board[p.locX + 1][p.locY] == 0 && b.board[p.locX + 1][p.locY + 1] == 0
+						&& b.board[p.locX + 2][p.locY + 2] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 15 && b.board[p.locX][p.locY + 3] == 0 && b.board[p.locX + 1][p.locY + 3] == 0)
+					p.locY++;
+			}
+		}
+		if (p.BlockType == 5) {
+			if (p.shape == 1) {
+				if (LR == 1 && p.locX > 0 && b.board[p.locX - 1][p.locY] == 0 && b.board[p.locX][p.locY + 1] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 7 && b.board[p.locX + 3][p.locY] == 0 && b.board[p.locX + 2][p.locY + 1] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 16 && b.board[p.locX][p.locY + 1] == 0 && b.board[p.locX + 1][p.locY + 2] == 0
+						&& b.board[p.locX + 2][p.locY + 1] == 0)
+					p.locY++;
+			}
+			if (p.shape == 2) {
+				if (LR == 1 && p.locX > -1 && b.board[p.locX + 1][p.locY] == 0 && b.board[p.locX][p.locY + 1] == 0
+						&& b.board[p.locX + 1][p.locY + 2] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 7 && b.board[p.locX + 3][p.locY] == 0 && b.board[p.locX + 3][p.locY + 1] == 0
+						&& b.board[p.locX + 3][p.locY + 2] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 15 && b.board[p.locX + 2][p.locY + 1] == 0
+						&& b.board[p.locX + 2][p.locY + 3] == 0)
+					p.locY++;
+			}
+			if (p.shape == 3) {
+				if (LR == 1 && p.locX > 0 && b.board[p.locX + 1][p.locY + 1] == 0
+						&& b.board[p.locX - 1][p.locY + 2] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 7 && b.board[p.locX + 2][p.locY + 1] == 0
+						&& b.board[p.locX + 3][p.locY + 2] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 15 && b.board[p.locX][p.locY + 3] == 0 && b.board[p.locX + 1][p.locY + 3] == 0
+						&& b.board[p.locX + 2][p.locY + 3] == 0)
+					p.locY++;
+			}
+			if (p.shape == 4) {
+				if (LR == 1 && p.locX > 0 && b.board[p.locX - 1][p.locY] == 0 && b.board[p.locX - 1][p.locY + 1] == 0
+						&& b.board[p.locX - 1][p.locY + 2] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 8 && b.board[p.locX + 1][p.locY] == 0 && b.board[p.locX + 2][p.locY + 1] == 0
+						&& b.board[p.locX + 1][p.locY + 2] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 15 && b.board[p.locX][p.locY + 3] == 0 && b.board[p.locX + 1][p.locY + 2] == 0)
+					p.locY++;
+			}
+		}
+		if (p.BlockType == 6) {
+			if (p.shape == 1) {
+				if (LR == 1 && p.locX > 0 && b.board[p.locX][p.locY] == 0 && b.board[p.locX - 1][p.locY + 1] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 7 && b.board[p.locX + 3][p.locY] == 0 && b.board[p.locX + 2][p.locY + 1] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 16 && b.board[p.locX][p.locY + 2] == 0 && b.board[p.locX + 1][p.locY + 2] == 0
+						&& b.board[p.locX + 2][p.locY + 1] == 0)
+					p.locY++;
+			}
+			if (p.shape == 2) {
+				if (LR == 1 && p.locX > 0 && b.board[p.locX - 1][p.locY] == 0 && b.board[p.locX - 1][p.locY + 1] == 0
+						&& b.board[p.locX][p.locY + 2] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 8 && b.board[p.locX + 1][p.locY] == 0 && b.board[p.locX + 2][p.locY + 1] == 0
+						&& b.board[p.locX + 2][p.locY + 2] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 15 && b.board[p.locX][p.locY + 2] == 0 && b.board[p.locX + 1][p.locY + 3] == 0)
+					p.locY++;
+			}
+		}
+		if (p.BlockType == 7) {
+			if (p.shape == 1) {
+				if (LR == 1 && p.locX > 0 && b.board[p.locX - 1][p.locY] == 0 && b.board[p.locX][p.locY + 1] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 7 && b.board[p.locX + 2][p.locY] == 0 && b.board[p.locX + 3][p.locY + 1] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 16 && b.board[p.locX][p.locY + 1] == 0 && b.board[p.locX + 1][p.locY + 2] == 0
+						&& b.board[p.locX + 2][p.locY + 2] == 0)
+					p.locY++;
+			}
+			if (p.shape == 2) {
+				if (LR == 1 && p.locX > -1 && b.board[p.locX + 1][p.locY] == 0 && b.board[p.locX][p.locY + 1] == 0
+						&& b.board[p.locX][p.locY + 2] == 0)
+					p.locX--;
+				if (LR == 2 && p.locX < 7 && b.board[p.locX + 3][p.locY] == 0 && b.board[p.locX + 3][p.locY + 1] == 0
+						&& b.board[p.locX + 2][p.locY + 2] == 0)
+					p.locX++;
+				if (LR == 3 && p.locY < 15 && b.board[p.locX + 1][p.locY + 3] == 0
+						&& b.board[p.locX + 2][p.locY + 2] == 0)
+					p.locY++;
+			}
+		}
+	}
+
+	public void ClearRow() {// fix the column nine clear part
+		if (!gameOver)
+			score = score + 10;
+		p.BlockColor(b.board);
+		boolean rowFull = false;
+		int j = 0;
+		int var = 0;
+		while (j <= 17) {
+			if (b.board[0][j] != 0 && b.board[1][j] != 0 && b.board[2][j] != 0 && b.board[3][j] != 0
+					&& b.board[4][j] != 0 && b.board[5][j] != 0 && b.board[6][j] != 0 && b.board[7][j] != 0
+					&& b.board[8][j] != 0 && b.board[9][j] != 0) {
+				rowFull = true;
+				var = j;
+			}
+			j++;
+			if (rowFull) {
+				for (int i = 0; i < 10; i++) {
+					for (int k = var; k > 0; k--) {
+						b.board[i][k] = b.board[i][k - 1];
+					}
+				}
+				rowFull = false;
+				j = 0;
+				score = score + 1000;
+			}
+		}
+		newBlock();
+	}
+
+	public void actionPerformed(ActionEvent e) {
+
+		repaint();
+		time++;
+
+		if (time == 400 && speed > 10) {
+			speed = speed - 1;
+			speedDisplay = 45 - speed;
+			time = 0;
+		}
+
+		p.Block(b.board);
+		if (time % speed == 0)
+			move(3);
+		p.BlockColor(b.board);
+
+		if (p.BlockType == 1) {
+			if (p.shape == 1)
+				if (time % speed == speed - 1
+						&& (p.locY == 17 || b.board[p.locX][p.locY + 1] != 0 || b.board[p.locX + 1][p.locY + 1] != 0
+								|| b.board[p.locX + 2][p.locY + 1] != 0 || b.board[p.locX + 3][p.locY + 1] != 0))
+					ClearRow();
+			if (p.shape == 2)
+				if (time % speed == speed - 1 && (p.locY == 14 || b.board[p.locX][p.locY + 4] != 0))
+					ClearRow();
+		}
+		if (p.BlockType == 2) {
+			if (time % speed == speed - 1
+					&& (p.locY == 16 || b.board[p.locX][p.locY + 2] != 0 || b.board[p.locX + 1][p.locY + 2] != 0))
+				ClearRow();
+		}
+		if (p.BlockType == 3) {
+			if (p.shape == 1)
+				if (time % speed == speed - 1 && (p.locY == 16 || b.board[p.locX][p.locY + 1] != 0
+						|| b.board[p.locX + 1][p.locY + 1] != 0 || b.board[p.locX + 2][p.locY + 2] != 0))
+					ClearRow();
+			if (p.shape == 2) {
+				if (time % speed == speed - 1 && (p.locY == 15 || b.board[p.locX + 1][p.locY + 3] != 0
+						|| b.board[p.locX + 2][p.locY + 3] != 0))
+					ClearRow();
+			}
+			if (p.shape == 3) {
+				if (time % speed == speed - 1 && (p.locY == 15 || b.board[p.locX][p.locY + 3] != 0
+						|| b.board[p.locX + 1][p.locY + 3] != 0 || b.board[p.locX + 2][p.locY + 3] != 0))
+					ClearRow();
+			}
+			if (p.shape == 4) {
+				if (time % speed == speed - 1
+						&& (p.locY == 15 || b.board[p.locX][p.locY + 3] != 0 || b.board[p.locX + 1][p.locY + 1] != 0))
+					ClearRow();
+			}
+		}
+		if (p.BlockType == 4) {
+			if (p.shape == 1)
+				if (time % speed == speed - 1 && (p.locY == 16 || b.board[p.locX][p.locY + 2] != 0
+						|| b.board[p.locX + 1][p.locY + 1] != 0 || b.board[p.locX + 2][p.locY + 1] != 0))
+					ClearRow();
+			if (p.shape == 2) {
+				if (time % speed == speed - 1 && (p.locY == 15 || b.board[p.locX + 2][p.locY + 3] != 0
+						|| b.board[p.locX + 1][p.locY + 1] != 0))
+					ClearRow();
+			}
+			if (p.shape == 3) {
+				if (time % speed == speed - 1 && (p.locY == 15 || b.board[p.locX][p.locY + 3] != 0
+						|| b.board[p.locX + 1][p.locY + 3] != 0 || b.board[p.locX + 2][p.locY + 3] != 0))
+					ClearRow();
+			}
+			if (p.shape == 4) {
+				if (time % speed == speed - 1
+						&& (p.locY == 15 || b.board[p.locX][p.locY + 3] != 0 || b.board[p.locX + 1][p.locY + 3] != 0))
+					ClearRow();
+			}
+		}
+		if (p.BlockType == 5) {
+			if (p.shape == 1)
+				if (time % speed == speed - 1 && (p.locY == 16 || b.board[p.locX][p.locY + 1] != 0
+						|| b.board[p.locX + 1][p.locY + 2] != 0 || b.board[p.locX + 2][p.locY + 1] != 0))
+					ClearRow();
+			if (p.shape == 2) {
+				if (time % speed == speed - 1 && (p.locY == 15 || b.board[p.locX + 1][p.locY + 2] != 0
+						|| b.board[p.locX + 2][p.locY + 3] != 0))
+					ClearRow();
+			}
+			if (p.shape == 3) {
+				if (time % speed == speed - 1 && (p.locY == 15 || b.board[p.locX][p.locY + 3] != 0
+						|| b.board[p.locX + 1][p.locY + 3] != 0 || b.board[p.locX + 2][p.locY + 3] != 0))
+					ClearRow();
+			}
+			if (p.shape == 4) {
+				if (time % speed == speed - 1
+						&& (p.locY == 15 || b.board[p.locX + 1][p.locY + 2] != 0 || b.board[p.locX][p.locY + 3] != 0))
+					ClearRow();
+			}
+		}
+		if (p.BlockType == 6) {
+			if (p.shape == 1)
+				if (time % speed == speed - 1 && (p.locY == 16 || b.board[p.locX][p.locY + 2] != 0
+						|| b.board[p.locX + 1][p.locY + 2] != 0 || b.board[p.locX + 2][p.locY + 1] != 0))
+					ClearRow();
+			if (p.shape == 2)
+				if (time % speed == speed - 1
+						&& (p.locY == 15 || b.board[p.locX][p.locY + 2] != 0 || b.board[p.locX + 1][p.locY + 3] != 0))
+					ClearRow();
+		}
+		if (p.BlockType == 7) {
+			if (p.shape == 1)
+				if (time % speed == speed - 1 && (p.locY == 16 || b.board[p.locX][p.locY + 1] != 0
+						|| b.board[p.locX + 1][p.locY + 2] != 0 || b.board[p.locX + 2][p.locY + 2] != 0))
+					ClearRow();
+			if (p.shape == 2)
+				if (time % speed == speed - 1 && (p.locY == 15 || b.board[p.locX + 1][p.locY + 3] != 0
+						|| b.board[p.locX + 2][p.locY + 2] != 0))
+					ClearRow();
+		}
+	}
+	
+	public void gameOver() {
+		if (p.BlockType == 1) {
+			if (p.shape == 1)
+				if (p.locY == 0 && (b.board[p.locX][p.locY + 1] != 0 || b.board[p.locX + 1][p.locY + 1] != 0
+						|| b.board[p.locX + 2][p.locY + 1] != 0 || b.board[p.locX + 3][p.locY + 1] != 0))
+					gameOver = true;
+			if (p.shape == 2)
+				if (p.locY == 0 && (b.board[p.locX][p.locY + 4] != 0))
+					gameOver = true;
+		}
+		if (p.BlockType == 2) {
+			if (p.locY == 0 && (b.board[p.locX][p.locY + 2] != 0 || b.board[p.locX + 1][p.locY + 2] != 0))
+				gameOver = true;
+		}
+		if (p.BlockType == 3) {
+			if (p.shape == 1)
+				if (p.locY == 0 && (b.board[p.locX][p.locY + 1] != 0 || b.board[p.locX + 1][p.locY + 1] != 0
+						|| b.board[p.locX + 2][p.locY + 2] != 0))
+					gameOver = true;
+			if (p.shape == 2) {
+				if (p.locY == 0 && (b.board[p.locX + 1][p.locY + 3] != 0 || b.board[p.locX + 2][p.locY + 3] != 0))
+					ClearRow();
+			}
+			if (p.shape == 3) {
+				if (p.locY == 0 && (b.board[p.locX][p.locY + 3] != 0 || b.board[p.locX + 1][p.locY + 3] != 0
+						|| b.board[p.locX + 2][p.locY + 3] != 0))
+					gameOver = true;
+			}
+			if (p.shape == 4) {
+				if (p.locY == 0 && (b.board[p.locX][p.locY + 3] != 0 || b.board[p.locX + 1][p.locY + 1] != 0))
+					gameOver = true;
+			}
+		}
+		if (p.BlockType == 4) {
+			if (p.shape == 1)
+				if (p.locY == 0 && (b.board[p.locX][p.locY + 2] != 0 || b.board[p.locX + 1][p.locY + 1] != 0
+						|| b.board[p.locX + 2][p.locY + 1] != 0))
+					gameOver = true;
+			if (p.shape == 2) {
+				if (p.locY == 0 && (b.board[p.locX + 2][p.locY + 3] != 0 || b.board[p.locX + 1][p.locY + 1] != 0))
+					gameOver = true;
+			}
+			if (p.shape == 3) {
+				if (p.locY == 0 && (b.board[p.locX][p.locY + 3] != 0 || b.board[p.locX + 1][p.locY + 3] != 0
+						|| b.board[p.locX + 2][p.locY + 3] != 0))
+					gameOver = true;
+			}
+			if (p.shape == 4) {
+				if (p.locY == 0 && (b.board[p.locX][p.locY + 3] != 0 || b.board[p.locX + 1][p.locY + 3] != 0))
+					gameOver = true;
+			}
+		}
+		if (p.BlockType == 5) {
+			if (p.shape == 1)
+				if (p.locY == 0 && (b.board[p.locX][p.locY + 1] != 0 || b.board[p.locX + 1][p.locY + 2] != 0
+						|| b.board[p.locX + 2][p.locY + 1] != 0))
+					gameOver = true;
+			if (p.shape == 2) {
+				if (p.locY == 0 && (b.board[p.locX + 1][p.locY + 2] != 0 || b.board[p.locX + 2][p.locY + 3] != 0))
+					gameOver = true;
+			}
+			if (p.shape == 3) {
+				if (p.locY == 0 && (b.board[p.locX][p.locY + 3] != 0 || b.board[p.locX + 1][p.locY + 3] != 0
+						|| b.board[p.locX + 2][p.locY + 3] != 0))
+					gameOver = true;
+			}
+			if (p.shape == 4) {
+				if (p.locY == 0 && (b.board[p.locX + 1][p.locY + 2] != 0 || b.board[p.locX][p.locY + 3] != 0))
+					gameOver = true;
+			}
+		}
+		if (p.BlockType == 6) {
+			if (p.shape == 1)
+				if (p.locY == 0 && (b.board[p.locX][p.locY + 2] != 0 || b.board[p.locX + 1][p.locY + 2] != 0
+						|| b.board[p.locX + 2][p.locY + 1] != 0))
+					gameOver = true;
+			if (p.shape == 2)
+				if (p.locY == 0 && (b.board[p.locX][p.locY + 2] != 0 || b.board[p.locX + 1][p.locY + 3] != 0))
+					gameOver = true;
+		}
+		if (p.BlockType == 7) {
+			if (p.shape == 1)
+				if (p.locY == 0 && (b.board[p.locX][p.locY + 1] != 0 || b.board[p.locX + 1][p.locY + 2] != 0
+						|| b.board[p.locX + 2][p.locY + 2] != 0))
+					gameOver = true;
+			if (p.shape == 2)
+				if (p.locY == 0 && (b.board[p.locX + 1][p.locY + 3] != 0 || b.board[p.locX + 2][p.locY + 2] != 0))
+					gameOver = true;
+		}
+	}
+}
