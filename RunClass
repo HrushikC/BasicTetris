@@ -1,0 +1,16 @@
+import java.awt.Color;
+import javax.swing.JFrame;
+
+
+public class Run extends JFrame
+{
+	public static void main(String[] args)
+	{
+		JFrame jf = new JFrame();
+        jf.setSize(763, 780);
+        jf.add(new Game());
+        jf.setTitle("Tetris, By: Hrushik Chiluvuri");
+        jf.setVisible(true);
+        jf.setDefaultCloseOperation(EXIT_ON_CLOSE);
+	}
+}
