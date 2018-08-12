@@ -1,0 +1,276 @@
+public class Block {
+	private int[][] gameBoard;
+	public int BlockType = (int) (Math.random() * 7) + 1;
+	public char direction;
+	public int locX = 3;
+	public int locY;
+	public int shape;
+
+	public Block() {
+
+	}
+
+	public void BlockColor(int[][] board) {
+
+		if (BlockType == 1) {
+			if (shape == 1) {
+				board[locX][locY] = 1;
+				board[locX + 1][locY] = 1;
+				board[locX + 2][locY] = 1;
+				board[locX + 3][locY] = 1;
+			}
+			if (shape == 2) {
+				board[locX][locY] = 1;
+				board[locX][locY + 1] = 1;
+				board[locX][locY + 2] = 1;
+				board[locX][locY + 3] = 1;
+			}
+		}
+		if (BlockType == 2) {
+			board[locX][locY] = 2;
+			board[locX][locY + 1] = 2;
+			board[locX + 1][locY] = 2;
+			board[locX + 1][locY + 1] = 2;
+		}
+		if (BlockType == 3) {
+			if (shape == 1) {
+				board[locX][locY] = 3;
+				board[locX + 1][locY] = 3;
+				board[locX + 2][locY] = 3;
+				board[locX + 2][locY + 1] = 3;
+			}
+			if (shape == 2) {
+				board[locX + 2][locY] = 3;
+				board[locX + 2][locY + 1] = 3;
+				board[locX + 2][locY + 2] = 3;
+				board[locX + 1][locY + 2] = 3;
+			}
+			if (shape == 3) {
+				board[locX][locY + 1] = 3;
+				board[locX][locY + 2] = 3;
+				board[locX + 1][locY + 2] = 3;
+				board[locX + 2][locY + 2] = 3;
+			}
+			if (shape == 4) {
+				board[locX][locY] = 3;
+				board[locX][locY + 1] = 3;
+				board[locX][locY + 2] = 3;
+				board[locX + 1][locY] = 3;
+			}
+		}
+		if (BlockType == 4) {
+			if (shape == 1) {
+				board[locX][locY] = 4;
+				board[locX][locY + 1] = 4;
+				board[locX + 1][locY] = 4;
+				board[locX + 2][locY] = 4;
+			}
+			if (shape == 2) {
+				board[locX + 1][locY] = 4;
+				board[locX + 2][locY] = 4;
+				board[locX + 2][locY + 1] = 4;
+				board[locX + 2][locY + 2] = 4;
+			}
+			if (shape == 3) {
+				board[locX][locY + 2] = 4;
+				board[locX + 1][locY + 2] = 4;
+				board[locX + 2][locY + 1] = 4;
+				board[locX + 2][locY + 2] = 4;
+			}
+			if (shape == 4) {
+				board[locX][locY] = 4;
+				board[locX][locY + 1] = 4;
+				board[locX][locY + 2] = 4;
+				board[locX + 1][locY + 2] = 4;
+			}
+		}
+		if (BlockType == 5) {
+			if (shape == 1) {
+				board[locX][locY] = 5;
+				board[locX + 1][locY] = 5;
+				board[locX + 1][locY + 1] = 5;
+				board[locX + 2][locY] = 5;
+			}
+			if (shape == 2) {
+				board[locX + 1][locY + 1] = 5;
+				board[locX + 2][locY] = 5;
+				board[locX + 2][locY + 1] = 5;
+				board[locX + 2][locY + 2] = 5;
+			}
+			if (shape == 3) {
+				board[locX][locY + 2] = 5;
+				board[locX + 1][locY + 1] = 5;
+				board[locX + 1][locY + 2] = 5;
+				board[locX + 2][locY + 2] = 5;
+			}
+			if (shape == 4) {
+				board[locX][locY] = 5;
+				board[locX][locY + 1] = 5;
+				board[locX][locY + 2] = 5;
+				board[locX + 1][locY + 1] = 5;
+			}
+		}
+		if (BlockType == 6) {
+			if (shape == 1) {
+				board[locX][locY + 1] = 6;
+				board[locX + 1][locY] = 6;
+				board[locX + 1][locY + 1] = 6;
+				board[locX + 2][locY] = 6;
+			}
+			if (shape == 2) {
+				board[locX][locY] = 6;
+				board[locX][locY + 1] = 6;
+				board[locX + 1][locY + 1] = 6;
+				board[locX + 1][locY + 2] = 6;
+			}
+		}
+		if (BlockType == 7) {
+			if (shape == 1) {
+				board[locX][locY] = 7;
+				board[locX + 1][locY] = 7;
+				board[locX + 1][locY + 1] = 7;
+				board[locX + 2][locY + 1] = 7;
+			}
+			if (shape == 2) {
+				board[locX + 1][locY + 2] = 7;
+				board[locX + 1][locY + 1] = 7;
+				board[locX + 2][locY + 1] = 7;
+				board[locX + 2][locY] = 7;
+			}
+		}
+	}
+
+	public void Block(int[][] board) {
+
+		if (BlockType == 1) {
+			if (shape == 1) {
+				board[locX][locY] = 0;
+				board[locX + 1][locY] = 0;
+				board[locX + 2][locY] = 0;
+				board[locX + 3][locY] = 0;
+			}
+			if (shape == 2) {
+				board[locX][locY] = 0;
+				board[locX][locY + 1] = 0;
+				board[locX][locY + 2] = 0;
+				board[locX][locY + 3] = 0;
+			}
+		}
+		if (BlockType == 2) {
+			board[locX][locY] = 0;
+			board[locX][locY + 1] = 0;
+			board[locX + 1][locY] = 0;
+			board[locX + 1][locY + 1] = 0;
+		}
+		if (BlockType == 3) {
+			if (shape == 1) {
+				board[locX][locY] = 0;
+				board[locX + 1][locY] = 0;
+				board[locX + 2][locY] = 0;
+				board[locX + 2][locY + 1] = 0;
+			}
+			if (shape == 2) {
+				board[locX + 2][locY] = 0;
+				board[locX + 2][locY + 1] = 0;
+				board[locX + 2][locY + 2] = 0;
+				board[locX + 1][locY + 2] = 0;
+			}
+			if (shape == 3) {
+				board[locX][locY + 1] = 0;
+				board[locX][locY + 2] = 0;
+				board[locX + 1][locY + 2] = 0;
+				board[locX + 2][locY + 2] = 0;
+			}
+			if (shape == 4) {
+				board[locX][locY] = 0;
+				board[locX][locY + 1] = 0;
+				board[locX][locY + 2] = 0;
+				board[locX + 1][locY] = 0;
+			}
+		}
+		if (BlockType == 4) {
+			if (shape == 1) {
+				board[locX][locY] = 0;
+				board[locX][locY + 1] = 0;
+				board[locX + 1][locY] = 0;
+				board[locX + 2][locY] = 0;
+			}
+			if (shape == 2) {
+				board[locX + 1][locY] = 0;
+				board[locX + 2][locY] = 0;
+				board[locX + 2][locY + 1] = 0;
+				board[locX + 2][locY + 2] = 0;
+			}
+			if (shape == 3) {
+				board[locX][locY + 2] = 0;
+				board[locX + 1][locY + 2] = 0;
+				board[locX + 2][locY + 1] = 0;
+				board[locX + 2][locY + 2] = 0;
+			}
+			if (shape == 4) {
+				board[locX][locY] = 0;
+				board[locX][locY + 1] = 0;
+				board[locX][locY + 2] = 0;
+				board[locX + 1][locY + 2] = 0;
+			}
+		}
+		if (BlockType == 5) {
+			if (shape == 1) {
+				board[locX][locY] = 0;
+				board[locX + 1][locY] = 0;
+				board[locX + 1][locY + 1] = 0;
+				board[locX + 2][locY] = 0;
+			}
+			if (shape == 2) {
+				board[locX + 1][locY + 1] = 0;
+				board[locX + 2][locY] = 0;
+				board[locX + 2][locY + 1] = 0;
+				board[locX + 2][locY + 2] = 0;
+			}
+			if (shape == 3) {
+				board[locX][locY + 2] = 0;
+				board[locX + 1][locY + 1] = 0;
+				board[locX + 1][locY + 2] = 0;
+				board[locX + 2][locY + 2] = 0;
+			}
+			if (shape == 4) {
+				board[locX][locY] = 0;
+				board[locX][locY + 1] = 0;
+				board[locX][locY + 2] = 0;
+				board[locX + 1][locY + 1] = 0;
+			}
+		}
+		if (BlockType == 6) {
+			if (shape == 1) {
+				board[locX][locY + 1] = 0;
+				board[locX + 1][locY] = 0;
+				board[locX + 1][locY + 1] = 0;
+				board[locX + 2][locY] = 0;
+			}
+			if (shape == 2) {
+				board[locX][locY] = 0;
+				board[locX][locY + 1] = 0;
+				board[locX + 1][locY + 1] = 0;
+				board[locX + 1][locY + 2] = 0;
+			}
+		}
+		if (BlockType == 7) {
+			if (shape == 1) {
+				board[locX][locY] = 0;
+				board[locX + 1][locY] = 0;
+				board[locX + 1][locY + 1] = 0;
+				board[locX + 2][locY + 1] = 0;
+			}
+			if (shape == 2) {
+				board[locX + 1][locY + 2] = 0;
+				board[locX + 1][locY + 1] = 0;
+				board[locX + 2][locY + 1] = 0;
+				board[locX + 2][locY] = 0;
+			}
+		}
+	}
+
+	public void reset(int[][] board) {
+		gameBoard = board;
+	}
+}
